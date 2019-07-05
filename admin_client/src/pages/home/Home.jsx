@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import './home.less';
 
 /**
  * 主界面路由
@@ -7,7 +7,7 @@ import React, {Component} from 'react';
 class Home extends Component {
     render() {
         return (
-            <div>主界面路由</div>
+            <div className='home-container'>主界面路由</div>
         )
     }
 }
