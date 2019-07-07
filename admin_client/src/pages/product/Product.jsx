@@ -1,13 +1,22 @@
 import React, {Component} from 'react';
-
+import {Switch, Route, Redirect} from 'react-router-dom';
+import ProductHome from './ProductHome';
+import ProductAddUpdate from './ProductAddUpdate';
+import ProductDetails from './ProductDetails';
+import './index.less';
 /**
- * 商品路由
+ * TODO  商品路由
  */
 
 class Product extends Component {
     render() {
         return (
-            <div>商品路由</div>
+            <Switch>
+                <Route exact path='/product' component={ProductHome} />
+                <Route exact path='/product/add' component={ProductAddUpdate} />
+                <Route exact path='/product/details' component={ProductDetails} />
+                <Redirect to='/product' />
+            </Switch>
         )
     }
 }

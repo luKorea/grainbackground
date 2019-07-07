@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {Card, Table, Button, Icon, Divider, message} from 'antd';
+import {Card, Table, Button, Icon, Divider, message, Modal} from 'antd';
+import AddForm from './AddForm';
+import UpdateForm from './UpdateForm';
 import LinkButton from './../../components/link-button';
-import {reqCategory} from './../../api';
+import {reqCategory, reqUpdateCategory, reqAddCategory} from './../../api';
 
 /**
  * TODO 商品分类路由
@@ -13,7 +15,8 @@ class Category extends Component {
         subCategorys: [], // 二级分类列表
         loading: false,
         parentId: '0',  // 分类的ID
-        parentName: '' // 分类名字
+        parentName: '', // 分类名字
+        status: 0   // 确认框状态，影藏为0， 添加为1，更新为2
     };
 
     // 初始化列数
@@ -30,14 +33,18 @@ class Category extends Component {
                 width: 400,
                 render: (category) => (
                     <span>
-                          <LinkButton>修改分类</LinkButton>
+                          <LinkButton
+                              onClick={() => {this.update(category)}}
+                          >
+                              修改分类
+                          </LinkButton>
                         {
                             this.state.parentId === '0'
                                 ? (<span>
                                     <Divider type="vertical"/>
-                                    <LinkButton onClick={() => {
-                                        this.showSubCategory(category)
-                                    }}>
+                                    <LinkButton
+                                        onClick={() => {this.showSubCategory(category)}}
+                                    >
                                         查看子分类
                                     </LinkButton>
                                 </span>)
@@ -49,11 +56,11 @@ class Category extends Component {
         ];
     };
 
-    // TODO  获取分类数据
-    getCategory = async () => {
+    // TODO 获取分类数据
+    getCategory = async (parentId) => {
         // 请求前
         this.setState({loading: true});
-        const {parentId} = this.state;
+        parentId = parentId || this.state.parentId;
         const data = await reqCategory(parentId);
         if (data.status === 0) {
             this.setState({loading: false});
@@ -87,6 +94,45 @@ class Category extends Component {
         })
     };
 
+    // TODO 关闭模态框
+    handleCancel = () => {
+        this.setState({status: 0});
+    };
+
+    // TODO 添加分类
+    add = () => { this.setState({status: 1}); };
+    addCategory = async () => {
+        this.handleCancel();
+        const {parentId, categoryName} = this.form.getFieldsValue();
+        const result = await reqAddCategory({categoryName, parentId});
+        if (result.status === 0){
+            message.success('添加分類成功');
+            this.getCategory();
+        }
+    };
+
+    // TODO 更新分类
+    update = (category) => {
+        // 保存分类对象
+        this.categoryName = category;
+        // 更新状态
+        this.setState({status: 2});
+    };
+    updateCategory = async () => {
+        // 隐藏模态框
+        this.handleCancel();
+        // 数据准备
+        const categoryId = this.categoryName._id;
+        const categoryName = this.form.getFieldValue('categoryName');
+        // 发送请求
+        const result = await reqUpdateCategory({categoryId, categoryName});
+        if (result.status === 0) {
+               message.success('更新分類成功');
+               // 重新渲染数据
+               this.getCategory();
+        }
+    };
+
     componentWillMount() {
         this.initColumn();
     }
@@ -96,16 +142,17 @@ class Category extends Component {
     }
 
     render() {
-        const {category, loading, subCategorys, parentId, parentName} = this.state;
+        const {category, loading, subCategorys, parentId, parentName, status} = this.state;
+        const  categoryName = this.categoryName || {};
         const title = parentId === '0' ? '一级分类' : (
             <span>
                 <LinkButton onClick={this.showCategory}>一级分类</LinkButton>
-                <Divider type="vertical" />
+                <Divider type="vertical"/>
                 <span>{parentName}</span>
             </span>
         );
         const extra = (
-            <Button type='primary'>
+            <Button type='primary' onClick={this.add}>
                 <Icon type='plus'/>
                 添加分类
             </Button>
@@ -123,6 +170,41 @@ class Category extends Component {
                     pagination={{defaultPageSize: 5, showQuickJumper: true}}
                     rowKey='_id'
                 />
+
+                {/* TODO 模态框 清除緩存數據 */}
+                {
+                    status &&
+                    <Modal
+                        title="添加分类"
+                        visible={status === 1}
+                        onOk={this.addCategory}
+                        onCancel={this.handleCancel}
+                        okText="确认"
+                        cancelText="取消"
+                    >
+                        <AddForm
+                            category={category}
+                            parentId={parentId}
+                            setForm={(form) => this.form = form}
+                        />
+                    </Modal>
+                }
+                {
+                    status &&
+                    <Modal
+                        title="更新分类"
+                        visible={status === 2}
+                        onOk={this.updateCategory}
+                        onCancel={this.handleCancel}
+                        okText="确认"
+                        cancelText="取消"
+                    >
+                        <UpdateForm
+                            categoryName={categoryName.name}
+                            setForm={(form) => {this.form =form}}
+                        />
+                    </Modal>
+                }
             </Card>
         )
     }

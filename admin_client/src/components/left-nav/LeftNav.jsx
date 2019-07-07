@@ -18,6 +18,7 @@ class LeftNav extends Component {
     getMenuNodes= (menuList) => {
         // 得到当前请求的路由路径
         const path = this.props.location.pathname;
+
         return menuList.map(item => {
             if(!item.children) {
                 return (
@@ -66,6 +67,9 @@ class LeftNav extends Component {
         // debugger
         // 得到当前请求的路由路径
         let path = this.props.location.pathname;
+        if (path.indexOf('/product') === 0) {  // TODO 解决点击商品子路由时，侧边栏选中失败
+            path = '/product';
+        }
         // 得到需要打开菜单项的key
         const openKey = this.openKey;
 

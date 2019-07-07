@@ -27,19 +27,48 @@ export const reqCategory = (parentId) => http(BASE + '/manage/category/list', {p
  * @param parentId
  * @param categoryName
  */
-export const reqAddCategory = (parentId, categoryName) => http(BASE + '/manage/category/add', {
+export const reqAddCategory = ({categoryName, parentId}) => http(BASE + '/manage/category/add', {
     categoryName,
     parentId
 }, 'POST');
 /**
- * 更新分类
+ * TODO 更新分类
  * @param categoryId
  * @param categoryName
  */
-export const reqUpdateCategory = (categoryId, categoryName) => http(BASE + '/manage/category/update', {
+export const reqUpdateCategory = ({categoryId, categoryName}) => http(BASE + '/manage/category/update', {
     categoryId,
     categoryName
 }, 'POST');
+/**
+ * TODO 獲取商品分頁列表
+ * @param pageNum
+ * @param pageSize
+ */
+export const reqProducts = (pageNum, pageSize) => http(BASE + '/manage/product/list', {pageNum, pageSize});
+/**
+ * TODO 搜索商品
+ * @param pageNum
+ * @param pageSize
+ * @param searchName
+ * @param searchType
+ */
+export const reqSearchProducts = ({pageNum, pageSize, searchType, searchName}) => http(BASE + '/manage/product/search', {
+    pageNum,
+    pageSize,
+    [searchType]: searchName
+});
+/**
+ * TODO 获取一个分类
+ * @param categoryId
+ */
+export const reqCategoryId = (categoryId) => http(BASE + '/manage/category/info', {categoryId});
+/**
+ * TODO 商品更新（上架/下架）
+ * @param productId
+ * @param status
+ */
+export const reqUpdateStatus = (productId, status) => http(BASE + '/manage/product/updateStatus', {productId, status}, 'POSt');
 
 
 /**
