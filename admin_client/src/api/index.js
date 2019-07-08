@@ -59,6 +59,12 @@ export const reqSearchProducts = ({pageNum, pageSize, searchType, searchName}) =
     [searchType]: searchName
 });
 /**
+ * TODO 添加商品
+ * @param product
+ */
+export const reqAddOrUpdateProduct = (product) => http(BASE +'/manage/product/' + (product._id ? 'update' : 'add'), product, "POST");
+
+/**
  * TODO 获取一个分类
  * @param categoryId
  */
@@ -69,7 +75,25 @@ export const reqCategoryId = (categoryId) => http(BASE + '/manage/category/info'
  * @param status
  */
 export const reqUpdateStatus = (productId, status) => http(BASE + '/manage/product/updateStatus', {productId, status}, 'POSt');
-
+/**
+ * TODO 删除图片
+ * @param name
+ */
+export const reqDeleteImg = (name) => http(BASE + '/manage/img/delete', {name}, 'POST');
+/**
+ * TODO 获取角色列表
+ */
+export const reqRole = () => http(BASE + '/manage/role/list');
+/**
+ * TODO 添加角色
+ * @param roleName
+ */
+export const reqAddRole = (roleName) => http(BASE + '/manage/role/add', {roleName}, 'POST');
+/**
+ * TODO 授权
+ * @param role
+ */
+export const reqRoleAuth = (role) => http(BASE + '/manage/role/update', role, 'POST');
 
 /**
  *  TODO json请求的接口请求函数

@@ -65,6 +65,7 @@ class Category extends Component {
         if (data.status === 0) {
             this.setState({loading: false});
             const category = data.data;
+            console.log(category);
             // 获取一级分类的数据
             if (parentId === '0') this.setState({category});
             // 获取二级分类数据
