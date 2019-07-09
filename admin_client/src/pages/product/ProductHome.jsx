@@ -148,6 +148,7 @@ class ProductHome extends Component {
                     columns={this.columns}
                     bordered
                     pagination={{
+                        current: this.pageNum,
                         total,
                         defaultPageSize: PAGE_SIZE,
                         showQuickJumper: true,

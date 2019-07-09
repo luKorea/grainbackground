@@ -6,6 +6,7 @@ import AddRoles from './AddRoles';
 import TreeRole from './TreeRole';
 import {reqRole, reqAddRole, reqRoleAuth} from './../../api';
 import memoryUtils from './../../utils/memoryUtils';
+import storageUtils from "../../utils/storageUtils";
 /**
  * 角色路由
  */
@@ -94,9 +95,17 @@ class Role extends Component {
         role.auth_name = memoryUtils.user.username;
         const result = await reqRoleAuth(role);
         if (result.status === 0) {
-            message.success('授权成功');
-            this.getRoleList();
-            this.setState({isShowAuth: false})
+            this.setState({isShowAuth: false});
+            // TODO 如果当前更新的是自己角色的权限，强制退出登录
+            if (role._id === memoryUtils.user.role_id) {
+                memoryUtils.user = {};
+                storageUtils.removeUser();
+                message.info('您已修改了权限，请重新登录');
+                this.props.history.replace('/login');
+            } else {
+                message.success('授权成功');
+                this.getRoleList();
+            }
         } else message.error('授权失败');
     };
 
@@ -143,7 +152,13 @@ class Role extends Component {
                        showQuickJumper: true
                    }}
                    rowKey='_id'
-                   rowSelection={{type: 'Radio', selectedRowKeys: [role._id]}}
+                   rowSelection={{
+                       type: 'Radio',
+                       selectedRowKeys: [role._id],
+                       onSelect: (role) => {
+                           this.setState({role})
+                       }
+                   }}
                />
                {
                    isShowAdd &&

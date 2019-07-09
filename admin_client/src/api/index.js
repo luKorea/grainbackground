@@ -16,7 +16,18 @@ export const reqLogin = (username, password) => http(BASE + '/login', {username,
  * TODO 添加用户接口
  * @param user
  */
-export const reqAddUser = (user) => http(BASE + '/manage/user/add', user, 'POST');
+export const reqAddOrUpdateUser = (user) => http(BASE + '/manage/user/' + (user._id ? 'update' : 'add'), user, 'POST');
+/**
+ * TODO 删除用户
+ * @param userId
+ */
+export const reqDeleteUser = (userId) => http(BASE + '/manage/user/delete',{userId}, 'POST')
+
+/**
+ * TODO 获取用户列表
+ */
+export const reqUserList = () => http(BASE + '/manage/user/list');
+
 /**
  * TODO 获取一级/二级分类的数据
  * @param parentId

@@ -64,6 +64,8 @@ class TopNav extends Component {
         // 显示确认框
         Modal.confirm({
             content: '确定退出吗?',
+            okText: '确定',
+            cancelText: '取消',
             onOk: () => {
                 // 删除保存的user数据
                 storageUtils.removeUser();

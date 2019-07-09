@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Tree, Input, Form} from 'antd';
 import PropTypes from 'prop-types';
 import menuList from './../../config/menuConfig';
@@ -6,7 +6,7 @@ import menuList from './../../config/menuConfig';
 const {Item} = Form;
 const {TreeNode} = Tree;
 
-class TreeRole extends Component {
+class TreeRole extends PureComponent {
     static propTypes = {
         role: PropTypes.object.isRequired
     };

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
     Card,
     Icon,
@@ -17,7 +17,7 @@ const {Item} = Form;
 const {TextArea} = Input;
 
 
-class ProductAddUpdate extends Component {
+class ProductAddUpdate extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -86,7 +86,7 @@ class ProductAddUpdate extends Component {
         }));
         // 如果是二级分类
         const {isUpdate, product} = this;
-        const {pCategoryId, categoryId} = product;
+        const {pCategoryId} = product;
         if (isUpdate && pCategoryId !== '0') {
             const subCategory = await this.getCategory(pCategoryId);
             const cOptions = subCategory.map(item => ({
