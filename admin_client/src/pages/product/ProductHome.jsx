@@ -12,6 +12,7 @@ import {
 import LinkButton from './../../components/link-button';
 import {reqProducts, reqSearchProducts, reqUpdateStatus} from './../../api';
 import {PAGE_SIZE} from './../../utils/constants';
+import memoryUtils from "../../utils/memoryUtils";
 
 const Options = Select.Option;
 
@@ -60,15 +61,26 @@ class ProductHome extends Component {
                 render: (product) => {
                     return (<span>
                       {/*将product对象使用state传递给目标路由组件*/}
-                      <LinkButton onClick={() => this.props.history.push('/product/details', {product})}>详情</LinkButton>
+                      <LinkButton onClick={() => this.showDetails(product)}>详情</LinkButton>
                        <Divider type='vertical' />
-                      <LinkButton onClick={() => this.props.history.push('/product/add', product)}>修改</LinkButton>
+                      <LinkButton onClick={() => this.showUpdate(product)}>修改</LinkButton>
                     </span>
                     )
                 }
             },
         ];
     };
+
+    showDetails = (product) => {
+        // TODO 缓存product
+        memoryUtils.product = product;
+        this.props.history.push('/product/details');
+    };
+    showUpdate = (product) => {
+        memoryUtils.product = product;
+        this.props.history.push('/product/add');
+    };
+
 
     // TODO 获取商品，搜索商品分页显示
 

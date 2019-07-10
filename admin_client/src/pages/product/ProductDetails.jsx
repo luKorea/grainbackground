@@ -3,6 +3,7 @@ import {Card, List, Icon} from 'antd';
 import LinkButton from './../../components/link-button';
 import {BASE_IMG_URL} from './../../utils/constants';
 import {reqCategoryId} from './../../api';
+import memoryUtils from "../../utils/memoryUtils";
 
 const Item = List.Item;
 
@@ -16,7 +17,7 @@ class ProductDetails extends Component {
     // TODO 获取分类ID
     async componentDidMount() {
         // 得到当前分类ID以及父分类ID
-        const {pCategoryId, categoryId} = this.props.location.state.product;
+        const {pCategoryId, categoryId} = memoryUtils.product;
         if (pCategoryId === '0') {
             // 一级分类下的商品
             const result = await reqCategoryId(categoryId);
@@ -45,9 +46,16 @@ class ProductDetails extends Component {
         }
     }
 
+
+    componentWillUnmount(): void {
+        // 清除数据
+        memoryUtils.product = {};
+    }
+
+
     render() {
 
-        const {name, desc, price, detail, imgs, cName1, cName2} = this.props.location.state.product;
+        const {name, desc, price, detail, imgs, cName1, cName2} = memoryUtils.product;
 
         const title = (
             <span>

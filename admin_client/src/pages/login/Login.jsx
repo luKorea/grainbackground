@@ -2,11 +2,10 @@
  * 登录路由
  */
 import React, {Component} from 'react';
-import {Form, Input, Icon, Button, message} from 'antd';
+import {Form, Input, Icon, Button} from 'antd';
 import {Redirect} from 'react-router-dom';
-import {reqLogin} from './../../api';
-import MemoryUtils from './../../utils/memoryUtils';
-import StorageUtils from './../../utils/storageUtils';
+import {connect} from 'react-redux';
+import {login} from './../../redux/actions';
 import './login.less';
 
 class Login extends Component {
@@ -16,15 +15,7 @@ class Login extends Component {
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 const {username, password} = values;
-                const response = await reqLogin(username, password);
-                if (response.status === 0) {
-                    message.success('登录成功');
-                    // 将用户信息存储到内存中
-                    const user = response.data;
-                    MemoryUtils.user = user; // 存储到内存
-                    StorageUtils.saveUser(user);  // 存储到localstorage
-                    this.props.history.replace('/');
-                } else message.warning(response.msg);
+                this.props.login(username, password);
             } else console.log(err);
         });
     };
@@ -32,8 +23,8 @@ class Login extends Component {
     render() {
 
         // 判断用户是否登录
-        const user = MemoryUtils.user;
-        if (user && user._id) return <Redirect to='/' />;
+        const user = this.props.user;
+        if (user && user._id) return <Redirect to='/home' />;
 
         const {getFieldDecorator} = this.props.form;
         return (
@@ -89,4 +80,8 @@ class Login extends Component {
     }
 }
 
-export default Form.create({name: 'login'})(Login);
+const wrapperLogin = Form.create({name: 'login'})(Login);
+export default connect(
+    state => ({user: state.user}),
+    {login}
+)(wrapperLogin);

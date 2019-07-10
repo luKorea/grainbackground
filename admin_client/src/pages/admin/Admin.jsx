@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Redirect, Switch, Route} from 'react-router-dom';
-import {message, Layout} from 'antd';
-import MemoryUtils from './../../utils/memoryUtils';
+import {connect} from 'react-redux';
+import {Layout} from 'antd';
 import LeftNav from './../../components/left-nav/LeftNav';
 import TopNav from './../../components/top-nav/TopNav';
 import Home from '../home/Home';
@@ -12,6 +12,7 @@ import User from '../user/User';
 import Bar from '../charts/Bar';
 import Line from '../charts/Line';
 import Pie from '../charts/Pie';
+import Error from '../error/Error';
 
 import './admin.less';
 
@@ -23,10 +24,9 @@ const { Footer, Sider, Content } = Layout;
 
 class Admin extends Component {
     render() {
-        const user = MemoryUtils.user;
+        const user = this.props.user;
         // 未登录
         if (!user || !user._id) {
-            message.warning('你还未登录，请先登录');
             return <Redirect to='/login' />
         }
         return (
@@ -36,6 +36,7 @@ class Admin extends Component {
                         <TopNav />
                         <Content className='admin-main'>
                             <Switch>
+                                <Redirect exact from='/' to='/home' />
                                 <Route path='/home' component={Home} />
                                 <Route path='/category' component={Category} />
                                 <Route path='/product' component={Product} />
@@ -44,7 +45,7 @@ class Admin extends Component {
                                 <Route path='/charts/bar' component={Bar} />
                                 <Route path='/charts/line' component={Line} />
                                 <Route path='/charts/pie' component={Pie} />
-                                <Redirect to='/home' />
+                                <Route  component={Error} />
                             </Switch>
                         </Content>
                         <Footer className='admin-footer'>后台网站开发，个人开发娱乐</Footer>
@@ -54,4 +55,7 @@ class Admin extends Component {
     }
 }
 
-export default Admin;
+export default connect(
+    state => ({user: state.user}),
+    {}
+)(Admin);

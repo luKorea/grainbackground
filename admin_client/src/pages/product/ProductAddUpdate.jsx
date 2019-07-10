@@ -12,6 +12,7 @@ import LinkButton from './../../components/link-button';
 import PictureWall from './PictureWall';
 import RichTextEditor from './RichTextEditor';
 import {reqCategory, reqAddOrUpdateProduct} from './../../api';
+import memoryUtils from "../../utils/memoryUtils";
 
 const {Item} = Form;
 const {TextArea} = Input;
@@ -139,15 +140,20 @@ class ProductAddUpdate extends PureComponent {
 
     componentWillMount() {
         // 判断有股点击修改数据或添加数据
-        const product = this.props.location.state;
+        const product = memoryUtils.product;
         // 是否更新的标识
-        this.isUpdate = !!product;
+        this.isUpdate = !!product._id;
         // 保存商品，如果没有，保存空对象
         this.product = product || {};
     }
 
     componentDidMount() {
         this.getCategory('0');
+    }
+
+    componentWillUnmount(): void {
+        // 清除数据
+        memoryUtils.product = {};
     }
 
     render() {

@@ -1,6 +1,6 @@
 /**
- * TODO 进行内存存储用户信息
+ * TODO 产品
  */
 export default {
-    user: {} // 保存当前登录的用户
+    product: {}
 }

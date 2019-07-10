@@ -615,7 +615,7 @@
 
 ## 2. 前台404界面
     <Redirect from='/' to='/home' exact/>
-    <Route component={NotFound}/>
+    <Route component={Error}/>
     
 ## 3. 打包应用运行
     1). 解决生产环境ajax跨域问题

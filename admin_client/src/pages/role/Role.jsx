@@ -5,8 +5,9 @@ import {formateDate} from './../../utils/dateUtils';
 import AddRoles from './AddRoles';
 import TreeRole from './TreeRole';
 import {reqRole, reqAddRole, reqRoleAuth} from './../../api';
-import memoryUtils from './../../utils/memoryUtils';
-import storageUtils from "../../utils/storageUtils";
+import {connect} from 'react-redux';
+import {logout} from "../../redux/actions";
+
 /**
  * 角色路由
  */
@@ -86,22 +87,20 @@ class Role extends Component {
             }
         });
     };
-    // 权限管理
+    // TODO 权限管理
     authRole = async () => {
         const role = this.state.role;
         const menus = this.auth.current.getMenus();
         role.menus = menus;
         // 授权人
-        role.auth_name = memoryUtils.user.username;
+        role.auth_name = this.props.user.username;
         const result = await reqRoleAuth(role);
         if (result.status === 0) {
             this.setState({isShowAuth: false});
             // TODO 如果当前更新的是自己角色的权限，强制退出登录
-            if (role._id === memoryUtils.user.role_id) {
-                memoryUtils.user = {};
-                storageUtils.removeUser();
+            if (role._id === this.props.user.role_id) {
                 message.info('您已修改了权限，请重新登录');
-                this.props.history.replace('/login');
+                this.props.logout();
             } else {
                 message.success('授权成功');
                 this.getRoleList();
@@ -196,4 +195,7 @@ class Role extends Component {
     }
 }
 
-export default Role;
+export default connect(
+    state => ({user: state.user}),
+    {logout}
+)(Role);

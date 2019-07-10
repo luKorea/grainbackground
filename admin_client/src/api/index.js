@@ -5,7 +5,7 @@ import jsonp from 'jsonp';
 import http from './http';
 import {message} from 'antd';
 
-const BASE = '';
+const BASE = '/api';
 /**
  * TODO 登录接口
  * @param username

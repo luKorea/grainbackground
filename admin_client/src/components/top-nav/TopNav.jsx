@@ -1,14 +1,13 @@
-import React, {Component} from 'react'
-import {withRouter} from 'react-router-dom'
-import {Modal} from 'antd'
+import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {logout} from './../../redux/actions';
+import {Modal} from 'antd';
 
-import LinkButton from '../link-button'
-import {reqWeather} from '../../api'
-import menuList from '../../config/menuConfig'
-import {formateDate} from '../../utils/dateUtils'
-import memoryUtils from '../../utils/memoryUtils'
-import storageUtils from '../../utils/storageUtils'
-import './topnav.less'
+import LinkButton from '../link-button';
+import {reqWeather} from '../../api';
+import {formateDate} from '../../utils/dateUtils';
+import './topnav.less';
 
 /*
 左侧导航的组件
@@ -38,27 +37,6 @@ class TopNav extends Component {
         this.setState({dayPictureUrl, weather})
     };
 
-    // TODO 获取标题
-    getTitle = () => {
-        // 得到当前请求路径
-        const path = this.props.location.pathname;
-        let title;
-        menuList.forEach(item => {
-            if (item.key === path) { // 如果当前item对象的key与path一样,item的title就是需要显示的title
-                title = item.title
-            } else if (item.children) {
-                // 在所有子item中查找匹配的
-                const cItem = item.children.find(cItem => path.indexOf(cItem.key) === 0);
-                // 如果有值才说明有匹配的
-                if (cItem) {
-                    // 取出它的title
-                    title = cItem.title
-                }
-            }
-        });
-        return title
-    };
-
     // TODO 退出登录
     logout = () => {
         // 显示确认框
@@ -68,11 +46,7 @@ class TopNav extends Component {
             cancelText: '取消',
             onOk: () => {
                 // 删除保存的user数据
-                storageUtils.removeUser();
-                memoryUtils.user = {};
-
-                // 跳转到login
-                this.props.history.replace('/login')
+                this.props.logout();
             }
         })
     };
@@ -101,10 +75,10 @@ class TopNav extends Component {
 
         const {currentTime, dayPictureUrl, weather} = this.state;
 
-        const username = memoryUtils.user.username;
+        const username = this.props.user.username;
 
         // 得到当前需要显示的title
-        const title = this.getTitle();
+        const title = this.props.headerTitle;
         return (
             <div className="header">
                 <div className="header-top">
@@ -124,4 +98,10 @@ class TopNav extends Component {
     }
 }
 
-export default withRouter(TopNav)
+export default connect(
+    state => ({
+        headerTitle: state.headerTitle,
+        user: state.user
+    }),
+    {logout}
+)(withRouter(TopNav));
